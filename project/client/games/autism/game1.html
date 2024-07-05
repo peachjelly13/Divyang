@@ -1,0 +1,2074 @@
+<html class="light">
+
+<head>
+    <title>SpeedRead</title>
+   
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/css/bootstrap-nightshade.css"
+        integrity="sha256-XefEKb9Q/q8W77CCNxxyBONk4tLt9lACdbMs7n9LF5c=" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
+        integrity="sha256-8M+b2Hj+vy/2J5tZ9pYDHeuPD59KsaEZn1XXj3xVhjg=" crossorigin="anonymous">
+
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 stroke=%22purple%22 fill=%22purple%22>&#128366;</text></svg>">
+
+    <meta name="color-scheme" content="rgba(255, 253, 231, 1);">
+
+    <style type="text/css">
+        .game-word {
+            font-size: 25vmin !important;
+            transition: opacity .5s !important;
+        }
+
+        .flash {
+            animation: flash-frame 1s linear infinite;
+        }
+
+        .bg-disabled {
+            background-color: rgba(255, 253, 231, 1);
+        }
+
+        @keyframes flash-frame {
+            50% {
+                opacity: .5;
+                color: red;
+            }
+        }
+        
+    </style>
+</head>
+
+<body class="d-flex bg-gray-100 flex-column h-100">
+    <header class="navbar bg-dark flex-column">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-1 text-light" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                
+            </span>
+            <div class="buttons">
+                <a role="button" class="game-pause btn btn-outline-light h-100 mx-2 invisible">
+                    <i class="bi bi-pause d-flex align-items-center h-100"></i>
+                </a>
+                <div class="btn-group">
+                    <button class="game-start-button btn btn-outline-light disabled" data-game="Custom">Custom</button>
+                    <button class="game-start-button btn btn-outline-light" data-game="Pre-K">Pre-K</button>
+                    <button class="game-start-button btn btn-outline-light" data-game="Kindergarten">K</button>
+                    <button class="game-start-button btn btn-outline-light" data-game="1st">1st</button>
+                    <button class="game-start-button btn btn-outline-light" data-game="2nd">2nd</button>
+                    <button class="game-start-button btn btn-outline-light" data-game="3rd">3rd</button>
+                    <button class="game-start-button btn btn-outline-light" data-game="Nouns">Nouns</button>
+                    <button class="game-start-button btn btn-outline-light" data-game="All">All</button>
+                </div>
+                <a role="button" class="game-settings btn btn-outline-light h-100 mx-2" data-bs-toggle="modal"
+                    data-bs-target=".game-settings-dialog">
+                    <i class="bi bi-gear-fill d-flex align-items-center h-100"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    <main class="d-flex flex-column h-100">
+        <section class="game-stats flex-column">
+            <div class="container-fluid my-4">
+                <div class="row justify-content-evenly text-center">
+                    <div class="col-3">
+                        <span class="game-timer-average fs-4 badge text-bg-secondary opacity-25"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Average: 0">
+                            <span class="fw-semibold">Timer:</span>
+                            <span class="game-round-timer fw-bold">0</span>
+                        </span>
+                    </div>
+                    <div class="col-3">
+                        <span class="fs-4 badge text-bg-secondary opacity-25" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom" data-bs-title="Highest: 0">
+                            <span class="fw-semibold">Streak:</span>
+                            <span class="game-win-streak fw-bold">0</span>
+                        </span>
+                    </div>
+                    <div class="col-3">
+                        <span class="game-score-details fs-4 badge text-bg-secondary opacity-25"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Correct: 0 | Skipped: 0 | Percentage: 0%">
+                            <span class="fw-semibold">Score:</span>
+                            <span class="game-score fw-bold">0</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="game-main container-fluid flex-grow-1 overflow-auto h-100 px-5">
+            <div class="game-main-board d-flex border rounded border-secondary bg-light text-center align-self-center h-100"
+                id="game-main-board">
+                <div class="game-board-inside d-flex h-100 w-100 align-self-center align-items-center"
+                    id="game-board-inside">
+                    <div class="align-self-center text-center w-100">
+                        <span class="game-word fw-bold fade show">Ready?</span>
+                        <span class="game-start-help-text">
+                            <br>To start a game, select a level in the menu above!
+                            <br><span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                                data-bs-title="The wordlists are based on the Dolch words, seperated by target education level.<br><br>
+                                    <p>Keyboard Shortcuts:<ul class='text-start'><li>SPACE: Pause/Resume</li><li>LEFT-ARROW: Skip</li><li>RIGHT-ARROW: Correct</li></ul>
+                                    <br>Created by Justin M. Wray. All Rights Reserved."><i
+                                    class="bi bi-info-square-fill h-100"></i></span>
+                        </span>
+                        <div class="game-board-decorations d-none position-absolute bottom-0"
+                            id="game-board-decorations">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="game-buttons flex-column">
+            <div class="container-fluid my-4">
+                <div class="row justify-content-evenly text-center">
+                    <a role="button"
+                        class="game-word-skip-btn col-3 btn btn-lg btn-outline-danger disabled opacity-25">Skip <i
+                            class="bi bi-skip-forward h-100"></i></a>
+                    <a role="button"
+                        class="game-word-correct-btn col-3 btn btn-lg btn-outline-success disabled opacity-25">Correct
+                        <i class="bi bi-check-circle h-100"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="game-settings-dialog modal fade" id="game-settings-dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Game Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        <div class="form-control d-flex flex-row justify-content-evenly bg-disabled h-100 mb-3"
+                            id="game-score-type-form">
+                            <input type="radio" class="btn-check disabled" name="game-score-type"
+                                id="game-score-type-plus-minus">
+                            <label class="btn btn-outline-dark mt-2 disabled" for="game-score-type-plus-minus"
+                                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                data-bs-title="One point earned for every correct answer, and one point lost for every skipped word. [Default]">
+                                <i class="bi bi-check-square" id="game-score-type-plus-minus-icon"></i>
+                                Plus/Minus</label>
+                            <input type="radio" class="btn-check disabled" name="game-score-type"
+                                id="game-score-type-total-stars">
+                            <label class="btn btn-outline-dark mt-2 disabled" for="game-score-type-total-stars"
+                                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                data-bs-title="Score is based on stars earned by speed; no score reductions for skipped words. [Friendly]">
+                                <i class="bi bi-square" id="game-score-type-total-stars-icon"></i> Total Stars</label>
+                            <input type="radio" class="btn-check disabled" name="game-score-type"
+                                id="game-score-type-time-based">
+                            <label class="btn btn-outline-dark mt-2 disabled" for="game-score-type-time-based"
+                                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                data-bs-title="Score is based on speed, with points added for correct answers and deducted for skipped words. [Competitive]">
+                                <i class="bi bi-square" id="game-score-type-time-based-icon"></i> Time-Based</label>
+                        </div>
+                        <label for="game-score-type-form">Game Score Type</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="game-time-limit form-control disabled" id="game-time-limit" type="text" disabled
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Time before the word is skipped automatically. Also used as the basis for time warnings. [Default: 30]">
+                        <label for="game-time-limit">Round Time Limit</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="game-max-stars form-control disabled" id="game-max-stars" type="text" disabled
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Maximum amount of stars earned per round; used as basis for star awardment for a correct answer. [Default: 5]">
+                        <label for="game-time-limit">Max Stars Per Round</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea class="game-custom-wordlist form-control" id="game-custom-wordlist" type="text"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Enter a custom wordlist to enable (or change) the custom game mode. [Comma Seperated Values]"></textarea>
+                        <label for="game-custom-wordlist">Custom Game Wordlist</label>
+                    </div>
+                    <div class="form-floating d-flex flex-row mb-3">
+                        <input class="game-state-data form-control" id="game-state-data" type="text"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Copy and store this data to save the current state for later. Replace with a previously stored state to resume a prior game state.">
+                        <a role="button" class="game-save-link btn btn-outline-dark mx-2 disabled" id="game-save-link"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Link to Saved Game (Right-Click & Copy URL to Save; Use the URL to Resume)">
+                            <i class="bi bi-save-fill d-flex align-items-center h-100"></i>
+                        </a>
+                        <label for="game-state-data">Game State Data</label>
+                    </div>
+                    <div class="form-floating">
+                        <div class="form-control d-flex flex-row flex-wrap justify-content-evenly h-100 mb-3"
+                            id="game-theme-form">
+                            <input type="radio" class="btn-check" name="game-theme" id="game-theme-light" checked>
+                            <label class="btn btn-outline-dark mt-2" for="game-theme-light" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                data-bs-title="Light Mode: Light colored backgrounds with dark colored text. [Default]">
+                                <i class="bi bi-check-square" id="game-theme-light-icon"></i> Light</label>
+                            <input type="radio" class="btn-check" name="game-theme" id="game-theme-dark">
+                            <label class="btn btn-outline-dark mt-2" for="game-theme-dark" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom"
+                                data-bs-title="Dark Mode: Dark colored backgrounds with light colored text.">
+                                <i class="bi bi-square" id="game-theme-dark-icon"></i> Dark</label>
+                            <input type="radio" class="btn-check" name="game-theme" id="game-theme-chalkboard">
+                            <label class="btn btn-outline-dark mt-2" for="game-theme-chalkboard"
+                                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                data-bs-title="Light Mode with chalkboard-styled game screen.">
+                                <i class="bi bi-square" id="game-theme-chalkboard-icon"></i> Chalkboard</label>
+                            <input type="radio" class="btn-check" name="game-theme" id="game-theme-chalkboard-dark">
+                            <label class="btn btn-outline-dark mt-2" for="game-theme-chalkboard-dark"
+                                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                data-bs-title="Dark Mode with chalkboard-styled game screen.">
+                                <i class="bi bi-square" id="game-theme-chalkboard-dark-icon"></i> Chalkboard
+                                Dark</label>
+                            <input type="radio" class="btn-check" name="game-theme" id="game-theme-prince">
+                            <label class="btn btn-outline-dark mt-2" for="game-theme-prince" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom" data-bs-title="Fun Color Mode with blue accents.">
+                                <i class="bi bi-square" id="game-theme-prince-icon"></i> Prince</label>
+                            <input type="radio" class="btn-check" name="game-theme" id="game-theme-princess">
+                            <label class="btn btn-outline-dark mt-2" for="game-theme-princess" data-bs-toggle="tooltip"
+                                data-bs-placement="bottom" data-bs-title="Fun Color Mode with pink and purple accents.">
+                                <i class="bi bi-square" id="game-theme-princess-icon"></i> Princess</label>
+                        </div>
+                        <label for="game-theme-form">Game Theme</label>
+                    </div>
+                    <a class="text-decoration-none link-dark" data-bs-toggle="collapse"
+                        href="#game-settings-advanced">Advanced Options<i class="bi bi-arrow-down"></i></a>
+                    <div class="collapse border rounded p-3" id="game-settings-advanced">
+                        <h6 data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Merge two Game States; useful for long-term trend tracking.">Merge Game Saves
+                        </h6>
+                        <div class="game-state-merge-data-input collapse" id="game-state-merge-data-input">
+                            <div class="form-floating d-flex flex-row mb-3">
+                                <input class="game-state-data-merge-1 form-control" id="game-state-data-merge-1"
+                                    type="text">
+                                <label for="game-state-data-merge-1">Game Save #1</label>
+                            </div>
+                            <div class="collapse form-floating d-flex flex-row mb-3">
+                                <input class="game-state-data-merge-2 form-control" id="game-state-data-merge-2"
+                                    type="text">
+                                <label for="game-state-data-merge-2">Game Save #2</label>
+                            </div>
+                            <a role="button" class="game-process-merge-data btn btn-outline-dark"
+                                id="game-process-merge-data">Merge Data</a>
+                        </div>
+                        <div class="game-state-merge-data-output collapse" id="game-state-merge-data-output">
+                            <div class="form-floating d-flex flex-row mb-3">
+                                <input class="game-state-merged-data form-control" id="game-state-merged-data"
+                                    type="text" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    data-bs-title="Copy and store this data to save the current state for later. Replace with a previously stored state to resume a prior game state.">
+                                <a role="button" class="game-state-merged-data-link btn btn-outline-dark mx-2 disabled"
+                                    id="game-state-merged-data-link" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    data-bs-title="Link to Saved Game (Right-Click & Copy URL to Save; Use the URL to Resume)">
+                                    <i class="bi bi-save-fill d-flex align-items-center h-100"></i>
+                                </a>
+                                <label for="game-state-merged-data">Merged Game State Data</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <a role="button" class="btn btn-secondary-outline" href="help.html" data-bs-toggle="tooltip"
+                            data-bs-placement="top" data-bs-title="SpeedRead Documentation"><i
+                                class="bi bi-patch-question-fill"></i></a>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="game-settings-save btn btn-primary"
+                            id="game-settings-save">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-stats-dialog modal fade" id="game-stats-dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Game Stats</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input class="game-stats-percentage form-control" id="game-stats-percentage" type="text"
+                            readonly>
+                        <label for="game-stats-percentage">Accuracy (Correct/Total)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="game-stats-score form-control" id="game-stats-score" type="text" readonly>
+                        <label for="game-stats-score">Total Score (+/- Correct/Skipped)</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="game-stats-average-time form-control" id="game-stats-average-time" type="text"
+                            readonly>
+                        <label for="game-stats-average-time">Average Response Time (Correct Answers Only)</label>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-floating mb-3">
+                            <input class="game-stats-highest-streak form-control" id="game-stats-highest-streak"
+                                type="text" readonly>
+                            <label for="game-stats-highest-streak">Highest Correct Streak</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="game-stats-stars form-control" id="game-stats-stars" type="text" readonly>
+                            <label for="game-stats-stars">Total Stars Earned</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-floating mb-3">
+                            <input class="game-stats-correct form-control" id="game-stats-correct" type="text" readonly>
+                            <label for="game-stats-correct">Total Correct</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="game-stats-skipped form-control" id="game-stats-skipped" type="text" readonly>
+                            <label for="game-stats-skipped">Total Skipped</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-floating mb-3">
+                            <input class="game-stats-score-plus-minus form-control" id="game-stats-score-plus-minus"
+                                type="text" readonly>
+                            <label for="game-stats-score-plus-minus">Point Score (+/-)</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="game-stats-score-time-based form-control" id="game-stats-score-time-based"
+                                type="text" readonly>
+                            <label for="game-stats-score-time-based">Time Score</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="form-floating mb-3">
+                            <input class="game-stats-highest-score-plus-minus form-control"
+                                id="game-stats-highest-score-plus-minus" type="text" readonly>
+                            <label for="game-stats-highest-score-plus-minus">Highest Points Score (+/-)</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="game-stats-highest-score-time-based form-control"
+                                id="game-stats-highest-score-time-based" type="text" readonly>
+                            <label for="game-stats-highest-score-time-based">Highest Time Score</label>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="game-stats-words form-control" id="game-stats-words" type="text" readonly>
+                        <label for="game-stats-words">Total Unique Words</label>
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <h5>Words (Ascending Accuracy)</h5>
+                        <table class="game-stats-word-table table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Word</th>
+                                    <th>Percentage</th>
+                                    <th>Correct</th>
+                                    <th>Skipped</th>
+                                    <th>Avg. Time</th>
+                                </tr>
+                            </thead>
+                            <tbody class="game-stats-word-table-body" id="game-stats-word-table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <div>
+                        <a role="button" class="game-stats-image btn btn-secondary-outline" id="game-stats-image"
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            data-bs-title="Download an image of Game Stats"><i class="bi bi-image-fill"></i></a>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-dark-5@1.1.3/dist/js/darkmode.min.js"
+        integrity="sha256-TJFCDUJIlHldAZoOahUGxmotcxJRiV2ZwL2ztw/0sZY=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"
+        integrity="sha256-nRoO8HoupfqozUr7YKBRgHXmdx40Hl/04OSBzv7e7L8=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
+        integrity="sha256-6H5VB5QyLldKH9oMFUmjxw2uWpPZETQXpCkBaDjquMs=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        class SpeedRead {
+            constructor(level) {
+                this.UI = window.UI;
+                this.sounds = new SpeedReadSound();
+
+                this.wordlists = {
+                    "Pre-K": [
+                        "a",
+                        "and",
+                        "away",
+                        "big",
+                        "blue",
+                        "can",
+                        "come",
+                        "down",
+                        "find",
+                        "for",
+                        "funny",
+                        "go",
+                        "help",
+                        "here",
+                        "I",
+                        "in",
+                        "is",
+                        "it",
+                        "jump",
+                        "little",
+                        "look",
+                        "make",
+                        "me",
+                        "my",
+                        "not",
+                        "one",
+                        "play",
+                        "red",
+                        "run",
+                        "said",
+                        "see",
+                        "the",
+                        "three",
+                        "to",
+                        "two",
+                        "up",
+                        "we",
+                        "where",
+                        "yellow",
+                        "you",
+                    ],
+                    "Kindergarten": [
+                        "all",
+                        "am",
+                        "are",
+                        "at",
+                        "ate",
+                        "be",
+                        "black",
+                        "brown",
+                        "but",
+                        "came",
+                        "did",
+                        "do",
+                        "eat",
+                        "four",
+                        "get",
+                        "good",
+                        "have",
+                        "he",
+                        "into",
+                        "like",
+                        "must",
+                        "new",
+                        "no",
+                        "now",
+                        "on",
+                        "our",
+                        "out",
+                        "please",
+                        "pretty",
+                        "ran",
+                        "ride",
+                        "saw",
+                        "say",
+                        "she",
+                        "so",
+                        "soon",
+                        "that",
+                        "there",
+                        "they",
+                        "this",
+                        "too",
+                        "under",
+                        "want",
+                        "was",
+                    ],
+                    "1st": [
+                        "after",
+                        "again",
+                        "an",
+                        "any",
+                        "as",
+                        "ask",
+                        "by",
+                        "could",
+                        "every",
+                        "fly",
+                        "from",
+                        "give",
+                        "going",
+                        "had",
+                        "has",
+                        "her",
+                        "him",
+                        "his",
+                        "how",
+                        "just",
+                        "know",
+                        "let",
+                        "live",
+                        "may",
+                        "of",
+                        "old",
+                        "once",
+                        "open",
+                        "over",
+                        "put",
+                        "round",
+                        "some",
+                        "stop",
+                        "take",
+                        "thank",
+                    ],
+                    "2nd": [
+                        "always",
+                        "around",
+                        "because",
+                        "been",
+                        "before",
+                        "best",
+                        "both",
+                        "buy",
+                        "call",
+                        "cold",
+                        "does",
+                        "don't",
+                        "fast",
+                        "first",
+                        "five",
+                        "found",
+                        "gave",
+                        "goes",
+                        "green",
+                        "its",
+                        "made",
+                        "many",
+                        "off",
+                        "or",
+                        "pull",
+                        "read",
+                        "right",
+                        "sing",
+                        "sit",
+                        "sleep",
+                        "tell",
+                        "their",
+                        "these",
+                        "those",
+                        "upon",
+                        "us",
+                        "use",
+                        "very",
+                        "wash",
+                        "which",
+                        "why",
+                        "wish",
+                        "work",
+                        "would",
+                        "write",
+                        "your",
+                    ],
+                    "3rd": [
+                        "about",
+                        "better",
+                        "bring",
+                        "carry",
+                        "clean",
+                        "cut",
+                        "done",
+                        "draw",
+                        "drink",
+                        "eight",
+                        "fall",
+                        "far",
+                        "full",
+                        "got",
+                        "grow",
+                        "hold",
+                        "hot",
+                        "hurt",
+                        "if",
+                        "keep",
+                        "kind",
+                        "laugh",
+                        "light",
+                        "long",
+                        "much",
+                        "myself",
+                        "never",
+                        "only",
+                        "own",
+                        "pick",
+                        "seven",
+                        "shall",
+                        "show",
+                        "six",
+                        "small",
+                        "start",
+                        "ten",
+                        "today",
+                        "together",
+                        "try",
+                        "warm",
+                    ],
+                    "Nouns": [
+                        "apple",
+                        "baby",
+                        "back",
+                        "ball",
+                        "bear",
+                        "bed",
+                        "bell",
+                        "bird",
+                        "birthday",
+                        "boat",
+                        "box",
+                        "boy",
+                        "bread",
+                        "brother",
+                        "cake",
+                        "car",
+                        "cat",
+                        "chair",
+                        "chicken",
+                        "children",
+                        "Christmas",
+                        "coat",
+                        "corn",
+                        "cow",
+                        "day",
+                        "dog",
+                        "doll",
+                        "door",
+                        "duck",
+                        "egg",
+                        "eye",
+                        "farm",
+                        "farmer",
+                        "father",
+                        "feet",
+                        "fire",
+                        "fish",
+                        "floor",
+                        "flower",
+                        "game",
+                        "garden",
+                        "girl",
+                        "goodbye",
+                        "grass",
+                        "ground",
+                        "hand",
+                        "head",
+                        "hill",
+                        "home",
+                        "horse",
+                        "house",
+                        "kitty",
+                        "leg",
+                        "letter",
+                        "man",
+                        "men",
+                        "milk",
+                        "money",
+                        "morning",
+                        "mother",
+                        "name",
+                        "nest",
+                        "night",
+                        "paper",
+                        "party",
+                        "picture",
+                        "pig",
+                        "rabbit",
+                        "rain",
+                        "ring",
+                        "robin",
+                        "Santa Claus",
+                        "school",
+                        "seed",
+                        "sheep",
+                        "shoe",
+                        "sister",
+                        "snow",
+                        "song",
+                        "squirrel",
+                        "stick",
+                        "street",
+                        "sun",
+                        "table",
+                        "thing",
+                        "time",
+                        "top",
+                        "toy",
+                        "tree",
+                        "watch",
+                        "water",
+                        "way",
+                        "wind",
+                        "window",
+                        "wood",
+                    ],
+                };
+
+                this.stats = {
+                    "winStreak": 0,
+                    "highestStreak": 0,
+                    "timeAverage": 0,
+                    "totalTime": 0,
+                    "correctWords": 0,
+                    "skippedWords": 0,
+                    "score": 0,
+                    "percentageScore": 0,
+                    "highestScore": 0,
+                    "totalStars": 0,
+                    "wordStats": {},
+                    "scoreDetails": {
+                        "plusMinus": 0,
+                        "timeBased": 0,
+                        "highestPlusMinus": 0,
+                        "highestTimeBased": 0,
+                    },
+                };
+
+                this.wordlist = [];
+
+                this.wordlistFilter = new RegExp("[^a-z0-9\\ \\-\\'\\,]", "gi");
+
+                this.roundTime = 0;
+                this.timeLimit = 30;
+                this.maxStars = 5;
+                this.clicked = false;
+                this.paused = false;
+
+                this.scoreType = "plus-minus";
+                this.scoreWarning = .9;
+
+                this.timeEffects = {
+                    "timerSound": .25,
+                    "timerFlash": .25,
+                    "wordFlash": .5,
+                    "skipFlash": .75,
+                };
+
+                if (level == "All") {
+                    Object.keys(this.wordlists).forEach(function (list) {
+                        this.wordlist = this.wordlist.concat(this.wordlists[list]);
+                    }.bind(this));
+                } else if (level == "Custom") {
+                    this.updateWordlist(this.UI.settingsCustomWordlist.value);
+                    this.UI.gameWordlistUpdateDisplay();
+                } else {
+                    this.wordlist = this.wordlists[level];
+                }
+
+                this.startGame();
+
+                return this;
+            }
+
+            startGame() {
+                this.stats = {
+                    "winStreak": 0,
+                    "highestStreak": 0,
+                    "timeAverage": 0,
+                    "totalTime": 0,
+                    "correctWords": 0,
+                    "skippedWords": 0,
+                    "score": 0,
+                    "percentageScore": 0,
+                    "highestScore": 0,
+                    "totalStars": 0,
+                    "wordStats": {},
+                    "scoreDetails": {
+                        "plusMinus": 0,
+                        "timeBased": 0,
+                        "highestPlusMinus": 0,
+                        "highestTimeBased": 0,
+                    },
+                };
+                this.UI.gameStartUpdateDisplay();
+                this.startRound();
+            };
+
+            stopGame() {
+                this.stopAllTimers();
+                this.stopAllSounds();
+            };
+
+            pauseGame() {
+                this.paused = true;
+                this.stopAllTimers();
+                this.stopAllSounds();
+                this.UI.gamePausedUpdateDisplay();
+            };
+
+            resumeGame() {
+                this.UI.gameResumedUpdateDisplay();
+                if (!(this.timeLimit > 0)) {
+                    this.timeLimit = 30;
+                };
+                if (!(this.maxStars > 0)) {
+                    this.maxStars = 5;
+                };
+                this.startRound();
+                this.paused = false;
+            };
+
+            startRound() {
+                this.stopAllTimers();
+                this.stopTimerSounds();
+                this.roundTime = 0;
+                this.UI.gameRoundStartedUpdateDisplay();
+                this.transitionTimer = setInterval(function () { this.transitionTimerHandler(); }.bind(this), 1000);
+                this.clicked = false;
+            };
+
+            transitionTimerHandler() {
+                this.UI.gameWordHideDisplay();
+                if (isNaN(parseInt(this.UI.gameWordDisplay.textContent))) {
+                    this.playSound("ding");
+                    this.UI.gameWordUpdateDisplay("3");
+                } else {
+                    var countValue = parseInt(this.UI.gameWordDisplay.textContent);
+                    if (countValue === 1) {
+                        clearInterval(this.transitionTimer);
+                        this.newRound();
+                    } else {
+                        countValue--;
+                        this.playSound("ding");
+                        this.UI.gameWordUpdateDisplay(countValue);
+                        if (countValue === 1) {
+                            this.UI.gameWordHideDisplay();
+                        } else {
+                            this.UI.gameWordShowDisplay();
+                        }
+                    }
+                }
+            };
+
+            newRound() {
+                this.currentWord = this.nextWord();
+                this.playSound("timerStart");
+                this.UI.gameWordUpdateDisplay(this.currentWord);
+                this.roundTimer = setInterval(function () { this.roundTimerHandler(); }.bind(this), 1000);
+            }
+
+            roundTimerHandler() {
+                this.roundTime++;
+                this.UI.gameRoundTimerTickUpdateDisplay();
+                if (this.roundTime === Math.round(this.timeLimit * this.timeEffects.timerSound)) {
+                    this.playSound("timer");
+                };
+                if (this.roundTime > Math.round(this.timeLimit * this.timeEffects.timerFlash)) {
+                    this.sounds.timer.playbackRate += .05;
+                }
+                if (this.roundTime === this.timeLimit) {
+                    this.stopTimerSounds();
+                    this.playSound("timerEnd");
+                    if ('speechSynthesis' in window) {
+                        var speech = new SpeechSynthesisUtterance();
+                        speech.text = "The word was " + this.currentWord;
+                        speech.lang = "en-US";
+                        window.speechSynthesis.speak(speech);
+                    };
+                };
+                if (this.roundTime === (this.timeLimit + 5)) {
+                    this.clickedSkip();
+                };
+            };
+
+            clickedCorrect() {
+                if (this.roundTime === 0 || this.roundTime >= this.timeLimit || this.paused || this.clicked) {
+                    return false;
+                };
+                this.clicked = true;
+                this.stopAllTimers();
+                this.stopTimerSounds();
+                this.playSound("bing");
+                this.UI.gameAnswerClickedUpdateDisplay("correct");
+                this.stats.correctWords++;
+                this.stats.winStreak++;
+                this.updateScore("correct");
+                this.stats.totalTime += this.roundTime;
+                this.stats.timeAverage = Math.round(this.stats.totalTime / this.stats.correctWords);
+                if (this.stats.winStreak > this.stats.highestStreak) {
+                    this.stats.highestStreak = this.stats.winStreak;
+                };
+                if (this.stats.score > this.stats.highestScore) {
+                    this.stats.highestScore = this.stats.score;
+                };
+                this.stats.percentageScore = Math.round((this.stats.correctWords / (this.stats.correctWords + this.stats.skippedWords)) * 100);
+                this.updateWordStats(this.currentWord, "correct");
+                this.UI.gameStatChangeUpdateDisplay();
+                this.newRoundDelay = setTimeout(function () {
+                    this.stopTimerSounds();
+                    var stars = Math.round((this.timeLimit - this.roundTime) / this.timeLimit * this.maxStars);
+                    this.UI.renderStars(stars);
+                    this.newRoundDelay = setTimeout(function () { this.startRound(); }.bind(this), 750);
+                }.bind(this), 250);
+            };
+
+            clickedSkip() {
+                if (this.roundTime === 0 || this.paused || this.clicked) {
+                    return false;
+                };
+                this.clicked = true;
+                this.stopTimerSounds();
+                this.playSound("buzzer");
+                this.UI.gameAnswerClickedUpdateDisplay("skip");
+                if (this.roundTime < this.timeLimit) {
+                    if ('speechSynthesis' in window) {
+                        var speech = new SpeechSynthesisUtterance();
+                        speech.text = "The word was " + this.currentWord;
+                        speech.lang = "en-US";
+                        window.speechSynthesis.speak(speech);
+                    };
+                };
+                this.stats.skippedWords++;
+                this.stats.winStreak = 0;
+                this.updateScore("skipped");
+                this.stats.percentageScore = Math.round((this.stats.correctWords / (this.stats.correctWords + this.stats.skippedWords)) * 100);
+                this.updateWordStats(this.currentWord, "skipped");
+                this.UI.gameStatChangeUpdateDisplay();
+                this.startRound();
+            };
+
+            updateScore(result) {
+                if (result === "correct") {
+                    var stars = Math.round((this.timeLimit - this.roundTime) / this.timeLimit * this.maxStars);
+                    this.stats.totalStars += stars;
+
+                    this.stats.scoreDetails.plusMinus++;
+                    this.stats.scoreDetails.timeBased += (this.timeLimit - this.roundTime);
+
+                    if (this.stats.scoreDetails.plusMinus > this.stats.scoreDetails.highestPlusMinus) {
+                        this.stats.scoreDetails.highestPlusMinus = this.stats.scoreDetails.plusMinus;
+                    };
+                    if (this.stats.scoreDetails.timeBased > this.stats.scoreDetails.highestTimeBased) {
+                        this.stats.scoreDetails.highestTimeBased = this.stats.scoreDetails.timeBased;
+                    };
+                } else {
+                    this.stats.scoreDetails.plusMinus--;
+                    this.stats.scoreDetails.timeBased -= this.roundTime;
+                };
+                if (this.scoreType === "time-based") {
+                    this.stats.score = this.stats.scoreDetails.timeBased;
+                } else if (this.scoreType === "total-stars") {
+                    this.stats.score = this.stats.totalStars;
+                } else {
+                    this.stats.score = this.stats.scoreDetails.plusMinus;
+                };
+            };
+
+            addToWordStats(word) {
+                if (!(word in this.stats.wordStats)) {
+                    this.stats.wordStats[word] = {
+                        "correct": 0,
+                        "skipped": 0,
+                        "percentage": 0,
+                        "time": 0,
+                    };
+                };
+            };
+
+            updateWordStats(word, result) {
+                this.addToWordStats(word);
+                if (result === "correct") {
+                    this.stats.wordStats[word].correct++;
+                    this.stats.wordStats[word].time += this.roundTime;
+                } else {
+                    this.stats.wordStats[word].skipped++;
+                };
+                this.stats.wordStats[word].percentage =
+                    Math.round((this.stats.wordStats[word].correct / (this.stats.wordStats[word].correct + this.stats.wordStats[word].skipped)) * 100);
+            }
+
+            nextWord() {
+                this.wordlist.sort(() => 0.5 - Math.random());
+                return this.wordlist[this.wordlist.length * Math.random() | 0];
+            };
+
+            playSound(type) {
+                this.sounds[type].play();
+            };
+
+            stopSound(type) {
+                this.sounds[type].pause();
+            };
+
+            stopAllSounds() {
+                Object.keys(this.sounds).forEach(function (type) {
+                    this.stopSound(type);
+                }.bind(this));
+            };
+
+            stopTimerSounds() {
+                this.stopSound("timer");
+                this.sounds.timer.playbackRate = .5;
+            };
+
+            stopAllTimers() {
+                clearInterval(this.transitionTimer);
+                clearInterval(this.roundTimer);
+                clearTimeout(this.newRoundDelay);
+            };
+
+            saveGame() {
+                this.wordlist = this.wordlist.sort(function (a, b) {
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
+
+                this.wordlist.forEach(function (word) {
+                    this.addToWordStats(word);
+                }.bind(this));
+
+                var saveGameStats = Object.assign({}, this.stats);
+                var saveGameWordStats = {};
+                Object.keys(saveGameStats.wordStats).forEach(function (word) {
+                    saveGameWordStats[word] = Object.values(saveGameStats.wordStats[word]);
+                });
+                saveGameStats.wordStats = saveGameWordStats;
+
+                var saveGameObj = {
+                    "stats": saveGameStats,
+                    "scoreType": this.scoreType,
+                    "timeLimit": this.timeLimit,
+                    "maxStars": this.maxStars,
+                    "theme": this.UI.theme,
+                };
+
+                return LZString.compressToEncodedURIComponent(JSON.stringify(saveGameObj));
+            };
+
+
+            loadGame(gameDataEncoded) {
+                try {
+                    var gameData = JSON.parse(LZString.decompressFromEncodedURIComponent(gameDataEncoded));
+
+                    this.wordlist = Object.keys(gameData.stats.wordStats).sort(function (a, b) {
+                        return a.toLowerCase().localeCompare(b.toLowerCase());
+                    });
+
+                    Object.keys(gameData.stats.wordStats).forEach(function (word) {
+                        gameData.stats.wordStats[word] = {
+                            "correct": gameData.stats.wordStats[word][0],
+                            "skipped": gameData.stats.wordStats[word][1],
+                            "percentage": gameData.stats.wordStats[word][2],
+                            "time": gameData.stats.wordStats[word][3],
+                        };
+                    }.bind(gameData));
+
+                    this.stats = gameData.stats;
+                    this.scoreType = gameData.scoreType;
+                    this.timeLimit = gameData.timeLimit;
+                    this.maxStars = gameData.maxStars;
+                    this.UI.setTheme(gameData.theme);
+                } catch {
+                    Object.keys(this.wordlists).forEach(function (list) {
+                        this.wordlist = this.wordlist.concat(this.wordlists[list]);
+                    }.bind(this));
+                }
+
+                this.pauseGame();
+                this.UI.gameStatChangeUpdateDisplay();
+            };
+
+            mergeGameData(gameObj) {
+                this.wordlist = this.wordlist.concat(gameObj.wordlist);
+                this.wordlist = [...new Set(this.wordlist)];
+                this.stats.totalTime += gameObj.stats.totalTime;
+                this.stats.correctWords += gameObj.stats.correctWords;
+                this.stats.skippedWords += gameObj.stats.skippedWords;
+                this.stats.totalStars += gameObj.stats.totalStars;
+                this.updateMaxStarScores(gameObj.maxStars);
+
+                this.stats.scoreDetails.plusMinus += gameObj.stats.scoreDetails.plusMinus;
+                this.stats.scoreDetails.timeBased += gameObj.stats.scoreDetails.timeBased;
+                this.stats.scoreDetails.highestPlusMinus = this.stats.scoreDetails.highestPlusMinus > gameObj.stats.scoreDetails.highestPlusMinus ?
+                    this.stats.scoreDetails.highestPlusMinus : gameObj.stats.scoreDetails.highestPlusMinus;
+                this.stats.scoreDetails.highestTimeBased = this.stats.scoreDetails.highestTimeBased > gameObj.stats.scoreDetails.highestTimeBased ?
+                    this.stats.scoreDetails.highestTimeBased : gameObj.stats.scoreDetails.highestTimeBased;
+
+                this.stats.winStreak = this.stats.winStreak > gameObj.stats.winStreak ?
+                    this.stats.winStreak : gameObj.stats.winStreak;
+
+                if (this.scoreType == "time-based") {
+                    this.stats.score = this.stats.scoreDetails.timeBased;
+                    this.stats.highestScore = this.stats.scoreDetails.highestTimeBased;
+                } else if (this.scoreType == "total-stars") {
+                    this.stats.score = this.stats.totalStars;
+                    this.stats.highestScore = this.stats.totalStars;
+                } else {
+                    this.stats.score = this.stats.scoreDetails.plusMinus;
+                    this.stats.highestScore = this.stats.scoreDetails.highestPlusMinus;
+                }
+
+                if (this.stats.correctWords) {
+                    this.stats.percentageScore = Math.round((this.stats.correctWords / (this.stats.correctWords + this.stats.skippedWords)) * 100);
+                    this.stats.timeAverage = Math.round(this.stats.totalTime / this.stats.correctWords);
+                }
+
+                if (this.stats.winStreak < gameObj.stats.winStreak) {
+                    this.stats.winStreak = gameObj.stats.winStreak;
+                };
+
+                if (this.stats.highestStreak < gameObj.stats.highestStreak) {
+                    this.stats.highestStreak = gameObj.stats.highestStreak;
+                };
+
+                Object.keys(this.stats.wordStats).forEach(function (word) {
+                    if (word in gameObj.stats.wordStats) {
+                        this.stats.wordStats[word].correct += gameObj.stats.wordStats[word].correct;
+                        this.stats.wordStats[word].skipped += gameObj.stats.wordStats[word].skipped;
+                        this.stats.wordStats[word].time += gameObj.stats.wordStats[word].time;
+                        if ((this.stats.wordStats[word].correct > 0) || (this.stats.wordStats[word].skipped > 0)) {
+                            this.stats.wordStats[word].percentage =
+                                Math.round((this.stats.wordStats[word].correct /
+                                    (this.stats.wordStats[word].correct + this.stats.wordStats[word].skipped)) * 100);
+                        } else {
+                            this.stats.wordStats[word].percentage = 0;
+                        };
+                    };
+                }.bind(this));
+
+                Object.keys(gameObj.stats.wordStats).forEach(function (word) {
+                    if (!(word in this.stats.wordStats)) {
+                        this.addToWordStats(word);
+                        this.stats.wordStats[word].correct += gameObj.stats.wordStats[word].correct;
+                        this.stats.wordStats[word].skipped += gameObj.stats.wordStats[word].skipped;
+                        this.stats.wordStats[word].time += gameObj.stats.wordStats[word].time;
+                        if ((this.stats.wordStats[word].correct > 0) || (this.stats.wordStats[word].skipped > 0)) {
+                            this.stats.wordStats[word].percentage =
+                                Math.round((this.stats.wordStats[word].correct /
+                                    (this.stats.wordStats[word].correct + this.stats.wordStats[word].skipped)) * 100);
+                        } else {
+                            this.stats.wordStats[word].percentage = 0;
+                        };
+                    };
+                }.bind(this));
+
+                this.UI.gameStatChangeUpdateDisplay();
+                this.pauseGame();
+                return this;
+            };
+
+            updateScoreType(scoreType) {
+                if (scoreType === "time-based") {
+                    this.scoreType = "time-based";
+                    this.stats.score = this.stats.scoreDetails.timeBased;
+                    this.stats.highestScore = this.stats.scoreDetails.highestTimeBased;
+                } else if (scoreType === "total-stars") {
+                    this.scoreType = "total-stars";
+                    this.stats.score = this.stats.totalStars;
+                    this.stats.highestScore = this.stats.totalStars;
+                } else {
+                    this.scoreType = "plus-minus";
+                    this.stats.score = this.stats.scoreDetails.plusMinus;
+                    this.stats.highestScore = this.stats.scoreDetails.highestPlusMinus;
+                };
+                this.UI.gameStatChangeUpdateDisplay();
+            };
+
+            updateMaxStarScores(newMaxStars) {
+                var earnedStarPercentage = (this.stats.totalStars / (this.maxStars * this.stats.correctWords));
+                var newEarnedStars = Math.round((newMaxStars * this.stats.correctWords) * earnedStarPercentage);
+
+                this.stats.totalStars = newEarnedStars;
+                this.maxStars = newMaxStars;
+
+                this.updateScoreType(this.scoreType);
+                this.UI.gameStatChangeUpdateDisplay();
+            };
+
+            updateWordlist(newWordlist) {
+                if (typeof (newWordlist) === "string") {
+                    this.wordlist = newWordlist.replace(this.wordlistFilter, "").replace(/\,\s*\,/g, ",").
+                        replace(/(^\,)/, "").replace(/(\,$)/, "").split(",");
+                };
+                this.wordlist = [...new Set(this.wordlist)];
+                this.wordlist = this.wordlist.sort(function (a, b) {
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
+            };
+        };
+
+        class SpeedReadUI {
+            constructor() {
+                this.pageHeader = document.getElementsByTagName("header")[0];
+                this.body = document.body;
+
+                this.settingsDialog = document.getElementById("game-settings-dialog");
+                this.settingsInputs = document.querySelectorAll(".game-settings-dialog input, .game-settings-dialog textarea");
+                this.settingsInputsLessCustomWL = document.querySelectorAll(".game-settings-dialog input, .game-settings-dialog textarea:not([id=game-custom-wordlist])");
+
+                this.settingsScoreTypeInputs = document.querySelectorAll('#game-score-type-form > input[type=radio][name="game-score-type"]');
+                this.settingsGameThemeInputs = document.querySelectorAll('#game-theme-form > input[type=radio][name="game-theme"]');
+                this.settingsTimeLimit = document.getElementById("game-time-limit");
+                this.settingsMaxStars = document.getElementById("game-max-stars");
+                this.settingsCustomWordlist = document.getElementById("game-custom-wordlist");
+                this.settingsGameStateData = document.getElementById("game-state-data");
+                this.settingsGameSaveLink = document.getElementById("game-save-link");
+                this.settingsSaveButton = document.getElementById("game-settings-save");
+
+                this.advancedSettings = document.getElementById("game-settings-advanced");
+                this.mergeDataFormInput = document.getElementById("game-state-merge-data-input");
+                this.mergeDataFormOutput = document.getElementById("game-state-merge-data-output");
+                this.mergeDataButton = document.getElementById("game-process-merge-data");
+                this.advancedSettingsCollapse = new bootstrap.Collapse(this.advancedSettings, { "toggle": false });
+                this.mergeDataFormInputCollapse = new bootstrap.Collapse(this.mergeDataFormInput, { "toggle": false });
+                this.mergeDataFormOutputCollapse = new bootstrap.Collapse(this.mergeDataFormOutput, { "toggle": false });
+
+                this.mergeData1 = document.getElementById("game-state-data-merge-1");
+                this.mergeData2 = document.getElementById("game-state-data-merge-2");
+                this.mergedData = document.getElementById("game-state-merged-data");
+                this.mergedDataLink = document.getElementById("game-state-merged-data-link")
+
+                this.startButtons = document.querySelectorAll(".game-start-button");
+                this.customGameStartButton = document.querySelectorAll(".game-start-button[data-game='Custom']");
+                this.customGameStartActive = document.querySelectorAll(".game-start-button[data-game='Custom'].active");
+
+                this.correctButton = document.querySelectorAll(".game-word-correct-btn");
+                this.skipButton = document.querySelectorAll(".game-word-skip-btn");
+                this.pauseButton = document.querySelectorAll(".game-pause");
+                this.gameStatsButton = document.querySelector(".game-stats-btn");
+
+                this.statsDialog = document.getElementById("game-stats-dialog");
+                this.statsScoreLabel = document.querySelectorAll(".game-stats-score")[0].nextElementSibling;;
+                this.statsPercentage = document.getElementById("game-stats-percentage");
+                this.statsScore = document.getElementById("game-stats-score");
+                this.statsAverageTime = document.getElementById("game-stats-average-time");
+                this.statsHighestStreak = document.getElementById("game-stats-highest-streak");
+                this.statsCorrect = document.getElementById("game-stats-correct");
+                this.statsSkipped = document.getElementById("game-stats-skipped");
+                this.statsStars = document.getElementById("game-stats-stars");
+                this.statsScorePlusMinus = document.getElementById("game-stats-score-plus-minus");
+                this.statsScoreTimeBased = document.getElementById("game-stats-score-time-based");
+                this.statsHighestScorePlusMinus = document.getElementById("game-stats-highest-score-plus-minus");
+                this.statsHighestScoreTimeBased = document.getElementById("game-stats-highest-score-time-based");
+                this.statsTotalWords = document.getElementById("game-stats-words");
+                this.statsWordTable = document.getElementById("game-stats-word-table-body");
+
+                this.statsImageButton = document.getElementById("game-stats-image");
+
+                this.settingsDialogModal = new bootstrap.Modal(this.settingsDialog);
+                this.statsDialogModal = new bootstrap.Modal(this.statsDialog);
+
+                this.currentURL = new URL(window.location);
+                this.currentURLGameParameter = this.currentURL.searchParams.get("game");
+
+                this.gameMainContainer = document.querySelector(".game-main");
+                this.gameBoard = document.getElementById("game-main-board");
+                this.gameBoardInside = document.getElementById("game-board-inside");
+                this.gameBoardDecorations = document.getElementById("game-board-decorations");
+                this.gameWordDisplay = document.querySelectorAll(".game-word")[0];
+                this.gameRoundTimerDisplay = document.querySelectorAll(".game-round-timer")[0];
+                this.gameWinStreakDisplay = document.querySelectorAll(".game-win-streak")[0];
+                this.gameScoreDisplay = document.querySelectorAll(".game-score")[0];
+                this.helpTextDisplay = document.querySelectorAll(".game-start-help-text")[0];
+
+                this.buttonCorrect = document.querySelectorAll(".game-word-correct-btn")[0];
+                this.buttonSkip = document.querySelectorAll(".game-word-skip-btn")[0];
+                this.buttonPause = document.querySelectorAll(".game-pause")[0];
+
+                this.outputStar = "<i class='bi bi-star-fill text-warning'></i>";
+                this.outputCorrectResultIcon = "<i class='bi bi-emoji-smile-fill text-success'></i>";
+                this.outputSkipResultIcon = "<i class='bi bi-emoji-frown text-danger'></i>";
+                this.outputPlayIcon = "<i class='bi bi-play d-flex align-items-center h-100'></i>";
+                this.outputPauseIcon = "<i class='bi bi-pause d-flex align-items-center h-100'></i>";
+
+                this.tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+                this.game = window.Game;
+
+                return this;
+            };
+
+            gameStartUpdateDisplay() {
+                document.querySelectorAll(".opacity-25").forEach(function (element) {
+                    element.classList.remove("opacity-25");
+                });
+                document.querySelectorAll(".disabled:not([data-game='Custom']").forEach(function (element) {
+                    element.classList.remove("disabled");
+                });
+                document.querySelectorAll(".game-start-help-text").forEach(function (element) {
+                    element.classList.add("d-none");
+                });
+                document.querySelectorAll(".game-pause").forEach(function (element) {
+                    element.classList.remove("invisible");
+                });
+                this.settingsTimeLimit.disabled = false;
+                this.settingsMaxStars.disabled = false;
+                document.getElementById('game-score-type-form').classList.remove("bg-disabled");
+                this.buttonPause.innerHTML = this.outputPauseIcon;
+                this.buttonPause.classList.remove("active");
+                this.gameWinStreakDisplay.textContent = 0;
+                this.gameRoundTimerDisplay.textContent = 0;
+                this.gameScoreDisplay.textContent = 0;
+                this.gameRoundTimerDisplay.parentElement.dataset.bsTitle = "Average: 0";
+                this.gameScoreDisplay.parentElement.dataset.bsTitle = "Correct: 0 | Skipped: 0 | Percentage: 0%";
+                new bootstrap.Tooltip(this.gameRoundTimerDisplay.parentElement);
+                new bootstrap.Tooltip(this.gameScoreDisplay.parentElement);
+                this.bindKeys();
+            };
+
+            gamePausedUpdateDisplay() {
+                this.gameWordDisplay.textContent = "Paused!";
+                this.gameWordDisplay.classList.add("show");
+                this.gameWordDisplay.classList.add("flash");
+                this.buttonCorrect.classList.add("disabled");
+                this.buttonSkip.classList.add("disabled");
+                this.buttonPause.innerHTML = this.outputPlayIcon;
+                this.buttonPause.classList.remove("active");
+                if (typeof (this.game) !== "undefined") {
+                    this.helpTextDisplay.innerHTML =
+                        "<br>Average Time: " + this.game.stats.timeAverage + " | Highest Streak: " + this.game.stats.highestStreak + " | Correct Words: " + this.game.stats.correctWords + " | Skipped Words: " + this.game.stats.skippedWords + " | Score Percentage: " + this.game.stats.percentageScore + "%<br>" +
+                        "<a role='button' class='game-stats-btn btn btn-outline-dark mx-2' data-bs-toggle='modal' data-bs-target='.game-stats-dialog'>" +
+                        "    <i class='bi bi-bar-chart-line-fill d-flex align-items-center'></i>" +
+                        "</a>";
+                };
+                this.helpTextDisplay.classList.remove("d-none");
+            };
+
+            gameResumedUpdateDisplay() {
+                this.helpTextDisplay.classList.add("d-none");
+                this.buttonPause.innerHTML = this.outputPauseIcon;
+                this.buttonPause.classList.remove("active");
+                this.buttonCorrect.classList.remove("disabled");
+                this.buttonSkip.classList.remove("disabled");
+            };
+
+            gameRoundStartedUpdateDisplay() {
+                this.gameWordDisplay.classList.remove("flash");
+                this.gameWordDisplay.classList.remove("show");
+                this.buttonSkip.classList.remove("flash");
+                this.gameRoundTimerDisplay.classList.remove("flash");
+                this.helpTextDisplay.classList.add("d-none");
+                if (typeof (this.game) !== "undefined") {
+                    if ((this.game.stats.score != 0) && (this.game.stats.score >= this.game.stats.highestScore)) {
+                        this.gameScoreDisplay.classList.remove("text-danger");
+                        this.gameScoreDisplay.classList.add("text-info");
+                    } else if (this.game.stats.score < Math.round(this.game.stats.highestScore * this.game.scoreWarning)) {
+                        this.gameScoreDisplay.classList.remove("text-info");
+                        this.gameScoreDisplay.classList.add("text-danger");
+                    } else {
+                        this.gameScoreDisplay.classList.remove("text-danger");
+                        this.gameScoreDisplay.classList.remove("text-info");
+                    };
+                    if ((this.game.stats.winStreak != 0) && (this.game.stats.winStreak >= this.game.stats.highestStreak)) {
+                        this.gameWinStreakDisplay.classList.add("text-info");
+                    } else {
+                        this.gameWinStreakDisplay.classList.remove("text-info");
+                    };
+                };
+                this.buttonCorrect.classList.remove("active");
+                this.buttonSkip.classList.remove("active");
+            };
+
+            gameRoundTimerTickUpdateDisplay() {
+                this.gameRoundTimerDisplay.textContent = this.game.roundTime;
+                if (this.game.roundTime > Math.round(this.game.timeLimit * this.game.timeEffects.timerFlash)) {
+                    this.gameRoundTimerDisplay.classList.add("flash");
+                }
+                if (this.game.roundTime === Math.round(this.game.timeLimit * this.game.timeEffects.wordFlash)) {
+                    this.gameWordDisplay.classList.add("flash");
+                };
+                if (this.game.roundTime === Math.round(this.game.timeLimit * this.game.timeEffects.skipFlash)) {
+                    this.buttonSkip.classList.add("flash");
+                    this.buttonSkip.classList.add("active");
+                };
+            };
+
+            gameStatChangeUpdateDisplay() {
+                if (typeof (this.game) !== "undefined") {
+                    this.gameWinStreakDisplay.textContent = this.game.stats.winStreak;
+                    this.gameScoreDisplay.textContent = this.game.stats.score;
+                    this.gameRoundTimerDisplay.parentElement.dataset.bsTitle = "Average: " + this.game.stats.timeAverage;
+                    this.gameWinStreakDisplay.parentElement.dataset.bsTitle = "Highest: " + this.game.stats.highestStreak;
+                    this.gameScoreDisplay.parentElement.dataset.bsTitle = "Correct: " + this.game.stats.correctWords + " | Skipped: " + this.game.stats.skippedWords + " | Percentage: " + this.game.stats.percentageScore + "%";
+                    new bootstrap.Tooltip(this.gameRoundTimerDisplay.parentElement);
+                    new bootstrap.Tooltip(this.gameWinStreakDisplay.parentElement);
+                    new bootstrap.Tooltip(this.gameScoreDisplay.parentElement);
+                };
+            };
+
+            gameAnswerClickedUpdateDisplay(result) {
+                if (result == "correct") {
+                    this.gameWordDisplay.classList.remove("flash");
+                    this.gameWordDisplay.classList.add("show");
+                    this.gameWordDisplay.innerHTML = this.outputCorrectResultIcon
+                    this.buttonCorrect.classList.add("active");
+                } else {
+                    this.gameWordDisplay.classList.remove("flash");
+                    this.gameWordDisplay.classList.add("show");
+                    this.gameWordDisplay.innerHTML = this.outputSkipResultIcon;
+                    this.buttonSkip.classList.add("active");
+                };
+            };
+
+            gameWordUpdateDisplay(content) {
+                this.gameWordDisplay.textContent = content;
+                this.gameWordDisplay.classList.add("show");
+            };
+
+            gameWordHideDisplay() {
+                this.gameWordDisplay.classList.remove("show");
+            };
+
+            gameWordShowDisplay() {
+                this.gameWordDisplay.classList.add("show");
+            };
+
+            gameWordlistUpdateDisplay() {
+                if (typeof (this.game) !== "undefined") {
+                    this.settingsCustomWordlist.value = this.game.wordlist.sort(function (a, b) {
+                        return a.toLowerCase().localeCompare(b.toLowerCase());
+                    });
+                };
+            };
+
+            renderStars(numStars) {
+                this.gameWordDisplay.innerHTML = "";
+                [...Array(numStars)].forEach(function () {
+                    this.gameWordDisplay.innerHTML = this.gameWordDisplay.innerHTML.concat(this.outputStar);
+                }.bind(this));
+            };
+
+            renderTooltips() {
+                this.tooltipList = [...this.tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+            };
+
+            hookGameStartButtons() {
+                this.startButtons.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        this.clearActiveStartButtons();
+
+                        if (typeof (this.game) !== "undefined") {
+                            this.game.stopGame();
+                        }
+
+                        button.classList.add("active");
+
+                        if (button.dataset.game !== "Custom") {
+                            this.disableCustomStartButton();
+                            this.settingsInputs.forEach(function (input) { input.value = ""; });
+                        } else {
+                            this.settingsInputsLessCustomWL.forEach(function (input) { input.value = ""; });
+                        };
+
+                        this.newGame(button.dataset.game);
+                    }.bind(this));
+                }.bind(this));
+            };
+
+            hookAnswerButtons() {
+                this.correctButton.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        this.game.clickedCorrect();
+                    }.bind(this));
+                }.bind(this));
+
+                this.skipButton.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        this.game.clickedSkip();
+                    }.bind(this));
+                }.bind(this));
+            };
+
+            hookPauseButtons() {
+                this.pauseButton.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        if (typeof (this.game) !== "undefined") {
+                            if (this.game.paused) {
+                                this.game.resumeGame();
+                            } else {
+                                this.game.pauseGame();
+                            };
+                        }
+                    }.bind(this));
+                }.bind(this));
+            };
+
+            hookSettingsDialog() {
+                this.settingsDialog.addEventListener("show.bs.modal", function () {
+                    if (typeof (this.game) !== "undefined") {
+                        this.game.pauseGame();
+                        this.hookGameScoreTypeChange();
+                        this.toggleScoreTypeButtons(this.game.scoreType);
+                        this.toggleThemeButtons(this.theme);
+                        this.settingsTimeLimit.value = this.game.timeLimit;
+                        this.settingsMaxStars.value = this.game.maxStars;
+
+                        if (this.customGameStartActive.length) {
+                            this.gameWordlistUpdateDisplay()
+                        };
+
+                        this.settingsGameStateData.value = this.game.saveGame();
+                        this.settingsGameSaveLink.href = window.location.pathname + "?game=" + this.game.saveGame();
+                    };
+                }.bind(this));
+
+                this.settingsDialog.addEventListener("shown.bs.modal", function () {
+                    this.settingsCustomWordlist.style.height = "auto";
+                    this.settingsCustomWordlist.style.minHeight = "auto";
+                    this.settingsCustomWordlist.style.minHeight = this.settingsCustomWordlist.scrollHeight + 4;
+                    this.settingsCustomWordlist.style.overflow = "hidden";
+                    this.settingsCustomWordlist.addEventListener("keydown", function () {
+                        this.settingsCustomWordlist.style.minHeight = this.settingsCustomWordlist.scrollHeight;
+                    }.bind(this));
+                }.bind(this));
+
+                this.settingsDialog.addEventListener("hide.bs.modal", function () {
+                    this.advancedSettingsCollapse.hide();
+                    this.mergeDataFormInputCollapse.hide();
+                    this.mergeDataFormOutputCollapse.hide();
+                }.bind(this));
+
+                this.hookAdvancedSettings();
+                this.hookGameSettingsSave();
+            };
+
+            hookGameScoreTypeChange() {
+                this.settingsScoreTypeInputs.forEach(function (toggle) {
+                    toggle.addEventListener("change", function () {
+                        this.toggleScoreTypeButtons(toggle.id.replace("game-score-type-", ""));
+                    }.bind(this));
+                }.bind(this));
+            };
+
+            hookGameThemeChange() {
+                this.settingsGameThemeInputs.forEach(function (toggle) {
+                    toggle.addEventListener("change", function () {
+                        var theme = toggle.id.replace("game-theme-", "");
+                        this.toggleThemeButtons(theme);
+                        this.setTheme(theme);
+                        if (typeof (this.game) !== "undefined") {
+                            this.settingsGameStateData.value = this.game.saveGame();
+                            this.settingsGameSaveLink.href = window.location.pathname + "?game=" + this.game.saveGame();
+                        }
+                    }.bind(this));
+                }.bind(this));
+            };
+
+            hookAdvancedSettings() {
+                this.advancedSettings.addEventListener("show.bs.collapse", function () {
+                    this.mergeDataFormInput.classList.add("show");
+                }.bind(this));
+
+                this.advancedSettings.addEventListener("hide.bs.collapse", function () {
+                    this.mergeDataFormInputCollapse.show();
+                    this.mergeDataFormOutput.classList.remove("show");
+                    this.mergeData1.value = "";
+                    this.mergeData2.value = "";
+                }.bind(this));
+
+                this.hookGameMerge();
+            };
+
+            hookGameMerge() {
+                this.mergeDataButton.addEventListener("click", function () {
+                    if ((this.mergeData1.value !== "") && (this.mergeData2.value !== "")) {
+                        var game1 = new SpeedRead("Custom");
+                        game1.pauseGame();
+                        game1.loadGame(this.mergeData1.value);
+
+                        this.newGame("Custom");
+                        this.game.pauseGame();
+                        this.game.loadGame(this.mergeData2.value);
+
+                        this.game.mergeGameData(game1);
+
+                        this.mergedData.value = this.game.saveGame();
+                        this.mergedDataLink.href = window.location.pathname + "?game=" + this.game.saveGame();
+
+                        this.settingsGameStateData.value = this.game.saveGame();
+                        this.settingsGameSaveLink.href = window.location.pathname + "?game=" + this.game.saveGame();
+
+                        this.gameWordlistUpdateDisplay();
+
+                        this.toggleScoreTypeButtons(this.game.scoreType);
+
+                        this.clearActiveStartButtons();
+                        this.activateCustomStartButton();
+
+                        this.mergeDataFormInputCollapse.hide();
+                        this.mergeDataFormOutput.classList.add("show");
+
+                        this.gameStatChangeUpdateDisplay();
+                    }
+                }.bind(this));
+            };
+
+            hookGameSettingsSave() {
+                this.settingsSaveButton.addEventListener("click", function () {
+                    this.settingsDialogModal.hide();
+
+                    if (typeof (this.game) === "undefined") {
+                        if (this.settingsCustomWordlist.value !== "") {
+                            this.activateCustomStartButton();
+                            this.newGame("Custom");
+                            this.game.pauseGame();
+                            this.game.updateWordlist(this.settingsCustomWordlist.value);
+                            this.gameWordlistUpdateDisplay();
+                        };
+                        if (this.settingsGameStateData.value !== "") {
+                            this.activateCustomStartButton();
+                            this.newGame("Custom");
+                            this.game.pauseGame();
+                            this.game.loadGame(this.settingsGameStateData.value);
+                            this.gameWordlistUpdateDisplay();
+                        };
+                    } else {
+                        if (this.settingsGameStateData.value !== this.game.saveGame()) {
+                            this.clearActiveStartButtons();
+                            this.activateCustomStartButton();
+                            this.game.loadGame(this.settingsGameStateData.value);
+                            this.gameWordlistUpdateDisplay();
+                        };
+                        if (this.settingsCustomWordlist.value !== "") {
+                            this.clearActiveStartButtons();
+                            this.activateCustomStartButton();
+                            this.game.updateWordlist(this.settingsCustomWordlist.value);
+                            this.gameWordlistUpdateDisplay();
+                        };
+                        if (parseInt(this.settingsTimeLimit.value) > 0) {
+                            this.game.timeLimit = parseInt(this.settingsTimeLimit.value);
+                        };
+                        if (parseInt(this.settingsMaxStars.value) > 0) {
+                            this.game.updateMaxStarScores(this.settingsMaxStars.value);
+                        };
+
+                        var gameScoreType =
+                            document.querySelectorAll('#game-score-type-form > input[type=radio][name="game-score-type"]:checked')[0].id.replace(
+                                "game-score-type-", "");
+                        if (this.game.scoreType != gameScoreType) {
+                            this.game.updateScoreType(gameScoreType);
+                        };
+                    };
+                }.bind(this));
+            };
+
+            hookStatsDialog() {
+                this.statsDialog.addEventListener("show.bs.modal", function () {
+                    this.statsPercentage.value = this.game.stats.percentageScore + "%";
+                    this.statsScore.value = this.game.stats.score;
+                    this.statsAverageTime.value = this.game.stats.timeAverage;
+                    this.statsHighestStreak.value = this.game.stats.highestStreak;
+                    this.statsCorrect.value = this.game.stats.correctWords;
+                    this.statsSkipped.value = this.game.stats.skippedWords;
+                    this.statsStars.value = this.game.stats.totalStars;
+
+                    this.statsScorePlusMinus.value = this.game.stats.scoreDetails.plusMinus;
+                    this.statsScoreTimeBased.value = this.game.stats.scoreDetails.timeBased;
+                    this.statsHighestScorePlusMinus.value = this.game.stats.scoreDetails.highestPlusMinus;
+                    this.statsHighestScoreTimeBased.value = this.game.stats.scoreDetails.highestTimeBased;
+
+                    this.statsTotalWords.value = Object.keys(this.game.stats.wordStats).length;
+
+                    if (this.game.scoreType === "time-based") {
+                        this.statsScoreLabel.textContent = "Total Score (+/- Time for Correct/Skipped)";
+                    } else if (this.game.scoreType === "total-stars") {
+                        this.statsScoreLabel.textContent = "Total Score (Stars for Correct Answers)";
+                    } else {
+                        this.statsScoreLabel.textContent = "Total Score (+/- Correct/Skipped)";
+                    };
+
+                    var arrayWordStats = [];
+                    Object.keys(this.game.stats.wordStats).forEach(function (word) {
+                        if ((this.game.stats.wordStats[word].correct == 0) && (this.game.stats.wordStats[word].skipped == 0)) {
+                            return;
+                        };
+
+                        var wordStat = {
+                            "word": word,
+                            "percentage":
+                                this.game.stats.wordStats[word].percentage,
+                            "correct":
+                                this.game.stats.wordStats[word].correct,
+                            "skipped":
+                                this.game.stats.wordStats[word].skipped,
+                            "time":
+                                this.game.stats.wordStats[word].time,
+                        }
+                        arrayWordStats.push(wordStat);
+                    }.bind(this));
+
+                    this.statsTotalWords.value = arrayWordStats.length;
+
+                    arrayWordStats.sort(function (a, b) {
+                        if (a.percentage > b.percentage) {
+                            return 1;
+                        } else if (a.percentage < b.percentage) {
+                            return -1;
+                        } else {
+                            if (a.correct > b.correct) {
+                                return 1;
+                            } else if (a.correct < b.correct) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+
+                    this.statsWordTable.innerHTML = "";
+                    arrayWordStats.forEach(function (wordStat) {
+                        var word = wordStat.word;
+
+                        this.game.stats.wordStats[word].percentage =
+                            Math.round((this.game.stats.wordStats[word].correct /
+                                (this.game.stats.wordStats[word].correct + this.game.stats.wordStats[word].skipped)) * 100);
+
+                        var wordColor = "text-primary";
+                        if (this.game.stats.wordStats[word].percentage <= 25) {
+                            wordColor = "text-danger";
+                        } else if (this.game.stats.wordStats[word].percentage <= 50) {
+                            wordColor = "text-warning";
+                        } else if (this.game.stats.wordStats[word].percentage <= 75) {
+                            wordColor = "text-dark";
+                        } else if (this.game.stats.wordStats[word].percentage <= 90) {
+                            wordColor = "text-info";
+                        } else if (this.game.stats.wordStats[word].percentage > 100) {
+                            wordColor = "text-primary";
+                        } else if (this.game.stats.wordStats[word].percentage == 100) {
+                            wordColor = "text-success";
+                        };
+
+                        var timeAverage = "-";
+                        if ((this.game.stats.wordStats[word].time != 0) && (this.game.stats.wordStats[word].correct != 0)) {
+                            timeAverage = Math.round(this.game.stats.wordStats[word].time / this.game.stats.wordStats[word].correct);
+                        };
+
+                        this.statsWordTable.innerHTML = this.statsWordTable.innerHTML +
+                            "<tr>" +
+                            "<td class='" + wordColor + "'>" + word + "</td>" +
+                            "<td class='text-center''>" + this.game.stats.wordStats[word].percentage + "%</td>" +
+                            "<td class='text-center'>" + this.game.stats.wordStats[word].correct + "</td>" +
+                            "<td class='text-center'>" + this.game.stats.wordStats[word].skipped + "</td>" +
+                            "<td class='text-end pe-3'>" + timeAverage + "</td>" +
+                            "</tr>";
+                    }.bind(this));
+                }.bind(this));
+
+                this.hookStatsImage();
+            };
+
+            hookStatsImage() {
+                this.statsImageButton.addEventListener("click", function () {
+                    this.statsDialog.querySelectorAll("button, a").forEach(function (button) {
+                        button.style.display = "none";
+                    });
+
+                    var timestamp = new Date();
+
+                    this.statsDialog.querySelector(".modal-footer")
+                        .insertAdjacentHTML("beforeend",
+                            "<span class='game-stats-timestamp text-center fs-6 fw-light w-100' id='game-stats-timestamp'>" +
+                            timestamp + "</span>");
+                    this.statsDialog.querySelector(".modal-footer")
+                        .insertAdjacentHTML("beforeend",
+                            "<span class='game-stats-source text-center fs-6 fw-lighter w-100' id='game-stats-source'>Source: " +
+                            window.location.href + "</span>");
+
+                    this.statsDialog.querySelector(".modal-title").textContent = document.title + " - Game Stats";
+
+                    html2canvas(this.statsDialog.querySelector(".modal-dialog")).then(function (canvas) {
+                        this.statsDialog.querySelector(".modal-title").textContent = "Game Stats";
+
+                        this.statsDialog.querySelector("#game-stats-timestamp").remove();
+                        this.statsDialog.querySelector("#game-stats-source").remove();
+                        this.statsDialog.querySelectorAll("button, a").forEach(function (button) {
+                            button.style.display = "";
+                        });
+
+                        var filename = "SpeedRead_Stats_" + timestamp.getMonth() + "_" +
+                            timestamp.getDate() + "_" + timestamp.getFullYear() + "_" +
+                            timestamp.getHours() + "_" + timestamp.getMinutes() + "_" +
+                            timestamp.getSeconds() + ".png";
+
+                        var autoDownloadLink = document.createElement('a');
+                        autoDownloadLink.display = "none";
+                        autoDownloadLink.href = canvas.toDataURL();
+                        autoDownloadLink.download = filename;
+                        document.body.appendChild(autoDownloadLink);
+                        autoDownloadLink.click();
+                        document.body.removeChild(autoDownloadLink);
+                    }.bind(this));
+                }.bind(this));
+            };
+
+            toggleScoreTypeButtons(newScoreType) {
+                var scoreTypes = [
+                    "plus-minus",
+                    "time-based",
+                    "total-stars",
+                ];
+
+                scoreTypes.forEach(function (scoreType) {
+                    this.getScoreTypeElements(scoreType).button.checked = false;
+                    this.getScoreTypeElements(scoreType).icon.classList.remove("bi-check-square");
+                    this.getScoreTypeElements(scoreType).icon.classList.add("bi-square");
+                }.bind(this));
+
+                this.getScoreTypeElements(newScoreType).button.checked = true;
+                this.getScoreTypeElements(newScoreType).icon.classList.remove("bi-square");
+                this.getScoreTypeElements(newScoreType).icon.classList.add("bi-check-square");
+            };
+
+            toggleThemeButtons(newTheme) {
+                var themes = [
+                    "light",
+                    "dark",
+                    "chalkboard",
+                    "chalkboard-dark",
+                    "prince",
+                    "princess",
+                ];
+
+                themes.forEach(function (theme) {
+                    this.getThemeElements(theme).button.checked = false;
+                    this.getThemeElements(theme).icon.classList.remove("bi-check-square");
+                    this.getThemeElements(theme).icon.classList.add("bi-square");
+                }.bind(this));
+
+                this.getThemeElements(newTheme).button.checked = true;
+                this.getThemeElements(newTheme).icon.classList.remove("bi-square");
+                this.getThemeElements(newTheme).icon.classList.add("bi-check-square");
+            };
+
+            getScoreTypeElements(scoreType) {
+                return {
+                    "button": document.getElementById("game-score-type-" + scoreType),
+                    "icon": document.getElementById("game-score-type-" + scoreType + "-icon"),
+                };
+            };
+
+            getThemeElements(theme) {
+                return {
+                    "button": document.getElementById("game-theme-" + theme),
+                    "icon": document.getElementById("game-theme-" + theme + "-icon"),
+                };
+            };
+
+            clearActiveStartButtons() {
+                this.startButtons.forEach(function (aButton) {
+                    aButton.classList.remove("active");
+                    aButton.blur();
+                });
+            };
+
+            disableCustomStartButton() {
+                this.customGameStartButton.forEach(function (cButton) {
+                    cButton.classList.remove("active");
+                    cButton.classList.add("disabled");
+                });
+            };
+
+            activateCustomStartButton() {
+                this.customGameStartButton.forEach(function (cButton) {
+                    cButton.classList.remove("disabled");
+                    cButton.classList.add("active");
+                });
+            };
+
+            setTheme(theme) {
+                this.theme = theme;
+                switch (theme) {
+                    case "dark":
+                        darkmode.setDarkMode(true, false);
+                        this.setGameBoardStyle();
+                        this.setPageStyle();
+                        break;
+                    case "chalkboard":
+                        darkmode.setDarkMode(false, false);
+                        this.setGameBoardStyle("chalkboard");
+                        this.setPageStyle();
+                        break;
+                    case "chalkboard-dark":
+                        darkmode.setDarkMode(true, false);
+                        this.setGameBoardStyle("chalkboard");
+                        this.setPageStyle();
+                        break;
+                    case "prince":
+                        darkmode.setDarkMode(false, false);
+                        this.setGameBoardStyle("prince");
+                        this.setPageStyle("prince");
+                        break;
+                    case "princess":
+                        darkmode.setDarkMode(false, false);
+                        this.setGameBoardStyle("princess");
+                        this.setPageStyle("princess");
+                        break;
+                    default:
+                        darkmode.setDarkMode(false, false);
+                        this.setGameBoardStyle();
+                        this.setPageStyle();
+                        break;
+                };
+            };
+
+            setGameBoardStyle(style) {
+                switch (style) {
+                    case "chalkboard":
+                        this.gameBoard.style.setProperty("border", "10px solid #C19A6B", "important");
+                        this.gameBoard.style.setProperty("border-bottom", "15px solid #C19A6B", "important");
+                        this.gameBoard.style.setProperty("background", "radial-gradient(#495A4C, transparent)", "important");
+                        this.gameBoard.style.setProperty("background-color", "#274C43", "important");
+                        this.gameBoard.style.setProperty("color", "#e0dbd1", "important");
+                        this.gameBoard.style.setProperty("box-shadow", "5px 5px 5px 2px rgb(0 0 0 / 50%)", "important");
+                        this.gameBoardInside.style.setProperty("box-shadow", "inset 5px 5px 10px 5px rgba(0,0,0,0.25)", "important");
+                        this.gameBoardInside.style.setProperty("position", "relative", "important");
+                        this.gameBoardDecorations.classList.remove("d-none");
+                        this.gameBoardDecorations.innerHTML = "<i class='bi bi-apple text-danger fs-3'></i><i class='bi bi-usb-fill text-dark fs-1 position-relative start-end align-text-bottom fs-1' style='bottom: -10px; text-shadow: 2px 2px 2px rgb(0 0 0 / 50%);'></i><span class='text-white ps-2 fs-1' style='line-height: 0;'>_</span>";
+                        this.gameBoardDecorations.style.setProperty("left", "25%", "important");
+                        this.gameBoardDecorations.style.setProperty("text-shadow", "2px 2px 2px rgb(0 0 0 / 50%)", "important");
+                        this.gameMainContainer.style.setProperty("padding-bottom", "10px", "important");
+                        break;
+                    case "prince":
+                        this.gameBoard.style.setProperty("border", "10px solid #06377e", "important");
+                        this.gameBoard.style.setProperty("background", "radial-gradient(#cee2fe, transparent)", "important");
+                        this.gameBoard.style.setProperty("background-color", "#86B6FE", "important");
+                        this.gameBoard.style.setProperty("color", "");
+                        this.gameBoard.style.setProperty("box-shadow", "");
+                        this.gameBoardInside.style.setProperty("box-shadow", "inset 5px 5px 10px 5px rgba(0,0,0,0.25)", "important");
+                        this.gameBoardInside.style.setProperty("position", "relative", "important");
+                        this.gameBoardDecorations.classList.remove("d-none");
+                        this.gameBoardDecorations.innerHTML = "<i class='bi bi-truck text-primary fs-1 position-relative start-end align-text-bottom' style='bottom: -5px;'></i>";
+                        this.gameBoardDecorations.style.setProperty("left", "25%", "important");
+                        this.gameBoardDecorations.style.setProperty("text-shadow", "2px 2px 2px rgb(0 0 0 / 50%)", "important");
+                        this.gameMainContainer.style.setProperty("padding-bottom", "");
+                        break;
+                    case "princess":
+                        this.gameBoard.style.setProperty("border", "10px solid var(--bs-purple)", "important");
+                        this.gameBoard.style.setProperty("background", "radial-gradient(#fff2f4, transparent)", "important");
+                        this.gameBoard.style.setProperty("background-color", "#ffdfe5", "important");
+                        this.gameBoard.style.setProperty("color", "");
+                        this.gameBoard.style.setProperty("box-shadow", "");
+                        this.gameBoardInside.style.setProperty("box-shadow", "inset 5px 5px 10px 5px rgba(0,0,0,0.25)", "important");
+                        this.gameBoardInside.style.setProperty("position", "relative", "important");
+                        this.gameBoardDecorations.classList.remove("d-none");
+                        this.gameBoardDecorations.innerHTML = "<i class='bi bi-hearts text-danger fs-1 position-relative start-end align-text-bottom'></i>";
+                        this.gameBoardDecorations.style.setProperty("left", "25%", "important");
+                        this.gameBoardDecorations.style.setProperty("text-shadow", "2px 2px 2px rgb(0 0 0 / 50%)", "important");
+                        this.gameMainContainer.style.setProperty("padding-bottom", "");
+                        break;
+                    default:
+                        this.gameBoard.style.setProperty("border", "");
+                        this.gameBoard.style.setProperty("background", "");
+                        this.gameBoard.style.setProperty("background-color", "");
+                        this.gameBoard.style.setProperty("color", "");
+                        this.gameBoard.style.setProperty("box-shadow", "");
+                        this.gameBoardInside.style.setProperty("box-shadow", "");
+                        this.gameBoardInside.style.setProperty("position", "");
+                        this.gameBoardDecorations.classList.add("d-none");
+                        this.gameBoardDecorations.innerHTML = "";
+                        this.gameBoardDecorations.style.setProperty("left", "");
+                        this.gameBoardDecorations.style.setProperty("text-shadow", "");
+                        this.gameMainContainer.style.setProperty("padding-bottom", "");
+                        break;
+                };
+            };
+
+            setPageStyle(style) {
+                switch (style) {
+                    case "prince":
+                        this.pageHeader.style.setProperty("background-color", "var(--bs-blue)", "important");
+                        this.body.style.setProperty("background-color", "#9ec5fe", "important");
+                        break;
+                    case "princess":
+                        this.pageHeader.style.setProperty("background-color", "var(--bs-indigo)", "important");
+                        this.body.style.setProperty("background-color", "#fff2f4", "important");
+                        break;
+                    default:
+                        this.pageHeader.style.setProperty("background-color", "");
+                        this.body.style.setProperty("background-color", "");
+                        break;
+                };
+            };
+
+            newGame(type) {
+                window.Game = new SpeedRead(type);
+                this.game = window.Game;
+            };
+
+            loadGameURL() {
+                if (this.currentURLGameParameter !== null) {
+                    window.history.replaceState(null, document.title, window.location.pathname);
+                    this.activateCustomStartButton();
+                    this.newGame("Custom");
+                    this.game.pauseGame();
+                    this.game.loadGame(this.currentURLGameParameter);
+                    this.gameWordlistUpdateDisplay();
+                };
+            };
+
+            bindKeys() {
+                document.onkeydown = function (evt) {
+                    evt = evt || window.event;
+                    if (evt.keyCode == 32) {
+                        if (this.game.paused) {
+                            this.game.resumeGame();
+                        } else {
+                            this.game.pauseGame();
+                        };
+                    };
+                    if (evt.keyCode == 39) {
+                        this.game.clickedCorrect();
+                    };
+                    if (evt.keyCode == 37) {
+                        this.game.clickedSkip();
+                    };
+                }.bind(this);
+            };
+
+            init() {
+                this.theme = "light";
+                this.renderTooltips();
+                this.hookGameStartButtons();
+                this.hookAnswerButtons();
+                this.hookPauseButtons();
+                this.hookSettingsDialog();
+                this.hookGameThemeChange();
+                this.hookStatsDialog();
+                this.loadGameURL();
+            };
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            window.UI = new SpeedReadUI();
+            window.UI.init();
+        }, false);
+
+        class SpeedReadSound {
+            constructor() {
+                this.beep = new Audio("data:audio/wav;base64,//uQRAAAAWMSLwUIYAAsYkXgoQwAEaYLWfkWgAI0wWs/ItAAAGDgYtAgAyN+QWaAAihwMWm4G8QQRDiMcCBcH3Cc+CDv/7xA4Tvh9Rz/y8QADBwMWgQAZG/ILNAARQ4GLTcDeIIIhxGOBAuD7hOfBB3/94gcJ3w+o5/5eIAIAAAVwWgQAVQ2ORaIQwEMAJiDg95G4nQL7mQVWI6GwRcfsZAcsKkJvxgxEjzFUgfHoSQ9Qq7KNwqHwuB13MA4a1q/DmBrHgPcmjiGoh//EwC5nGPEmS4RcfkVKOhJf+WOgoxJclFz3kgn//dBA+ya1GhurNn8zb//9NNutNuhz31f////9vt///z+IdAEAAAK4LQIAKobHItEIYCGAExBwe8jcToF9zIKrEdDYIuP2MgOWFSE34wYiR5iqQPj0JIeoVdlG4VD4XA67mAcNa1fhzA1jwHuTRxDUQ//iYBczjHiTJcIuPyKlHQkv/LHQUYkuSi57yQT//uggfZNajQ3Vmz+Zt//+mm3Wm3Q576v////+32///5/EOgAAADVghQAAAAA//uQZAUAB1WI0PZugAAAAAoQwAAAEk3nRd2qAAAAACiDgAAAAAAABCqEEQRLCgwpBGMlJkIz8jKhGvj4k6jzRnqasNKIeoh5gI7BJaC1A1AoNBjJgbyApVS4IDlZgDU5WUAxEKDNmmALHzZp0Fkz1FMTmGFl1FMEyodIavcCAUHDWrKAIA4aa2oCgILEBupZgHvAhEBcZ6joQBxS76AgccrFlczBvKLC0QI2cBoCFvfTDAo7eoOQInqDPBtvrDEZBNYN5xwNwxQRfw8ZQ5wQVLvO8OYU+mHvFLlDh05Mdg7BT6YrRPpCBznMB2r//xKJjyyOh+cImr2/4doscwD6neZjuZR4AgAABYAAAABy1xcdQtxYBYYZdifkUDgzzXaXn98Z0oi9ILU5mBjFANmRwlVJ3/6jYDAmxaiDG3/6xjQQCCKkRb/6kg/wW+kSJ5//rLobkLSiKmqP/0ikJuDaSaSf/6JiLYLEYnW/+kXg1WRVJL/9EmQ1YZIsv/6Qzwy5qk7/+tEU0nkls3/zIUMPKNX/6yZLf+kFgAfgGyLFAUwY//uQZAUABcd5UiNPVXAAAApAAAAAE0VZQKw9ISAAACgAAAAAVQIygIElVrFkBS+Jhi+EAuu+lKAkYUEIsmEAEoMeDmCETMvfSHTGkF5RWH7kz/ESHWPAq/kcCRhqBtMdokPdM7vil7RG98A2sc7zO6ZvTdM7pmOUAZTnJW+NXxqmd41dqJ6mLTXxrPpnV8avaIf5SvL7pndPvPpndJR9Kuu8fePvuiuhorgWjp7Mf/PRjxcFCPDkW31srioCExivv9lcwKEaHsf/7ow2Fl1T/9RkXgEhYElAoCLFtMArxwivDJJ+bR1HTKJdlEoTELCIqgEwVGSQ+hIm0NbK8WXcTEI0UPoa2NbG4y2K00JEWbZavJXkYaqo9CRHS55FcZTjKEk3NKoCYUnSQ0rWxrZbFKbKIhOKPZe1cJKzZSaQrIyULHDZmV5K4xySsDRKWOruanGtjLJXFEmwaIbDLX0hIPBUQPVFVkQkDoUNfSoDgQGKPekoxeGzA4DUvnn4bxzcZrtJyipKfPNy5w+9lnXwgqsiyHNeSVpemw4bWb9psYeq//uQZBoABQt4yMVxYAIAAAkQoAAAHvYpL5m6AAgAACXDAAAAD59jblTirQe9upFsmZbpMudy7Lz1X1DYsxOOSWpfPqNX2WqktK0DMvuGwlbNj44TleLPQ+Gsfb+GOWOKJoIrWb3cIMeeON6lz2umTqMXV8Mj30yWPpjoSa9ujK8SyeJP5y5mOW1D6hvLepeveEAEDo0mgCRClOEgANv3B9a6fikgUSu/DmAMATrGx7nng5p5iimPNZsfQLYB2sDLIkzRKZOHGAaUyDcpFBSLG9MCQALgAIgQs2YunOszLSAyQYPVC2YdGGeHD2dTdJk1pAHGAWDjnkcLKFymS3RQZTInzySoBwMG0QueC3gMsCEYxUqlrcxK6k1LQQcsmyYeQPdC2YfuGPASCBkcVMQQqpVJshui1tkXQJQV0OXGAZMXSOEEBRirXbVRQW7ugq7IM7rPWSZyDlM3IuNEkxzCOJ0ny2ThNkyRai1b6ev//3dzNGzNb//4uAvHT5sURcZCFcuKLhOFs8mLAAEAt4UWAAIABAAAAAB4qbHo0tIjVkUU//uQZAwABfSFz3ZqQAAAAAngwAAAE1HjMp2qAAAAACZDgAAAD5UkTE1UgZEUExqYynN1qZvqIOREEFmBcJQkwdxiFtw0qEOkGYfRDifBui9MQg4QAHAqWtAWHoCxu1Yf4VfWLPIM2mHDFsbQEVGwyqQoQcwnfHeIkNt9YnkiaS1oizycqJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");
+                this.ding = new Audio("data:audio/mpeg;base64,//NIZAAG5AMhL6CIAQgAAjABQBAAkjk2kkQKJHBAgCETwAsHx79eoEATP93kOCDv4P/ghKO/+o5XD/+D8ocKOUCA0EHA+D/E7wffyH//////lz////DEuD/wQOeIAQDFQIBgoCAIBjg+Hy4PqhGAAB/t/+IAAMcH////////zG1KHAh0OCcgrz3PKg9ExGNj//NIRCMJGW1g/sCcABFi1uH9gWgCjDU9/87T///Vz0ZPwuLo2U78FRnzGMax7n/x04amDU0TGF851agAABto7sNvaAP/8xGv//////Uh5PEz+JQhfw3BgSZWTFBJzFG6SP/3b9f/+6e/4csqPnFE78iv/UxotNP+t5WZl0qPH4kqttlAEjtgA//////8sh7H//NIRA8HzVViD8BMAQ8yntQfgJgCqDFvlkLIi3+a/kW//////zMAwILzrX+TQDqAyqX+ZBBQZL3WZGy6zpy60DLrFf1W2ygCSWgAf/////+WANJ+osgOZ1lgEmi5H+RP8aL//////zMCBwWX/0gy4Drq1fMgQYDavfpVmOdHPV7V1ZbbRaowSAP//////mvy//NIRA4HxTl2D8A0AQ87ItQdgDgAF1Opf6kEDd6fol1X/T1uhoLXvq/j8e/8cQeB7j3Jccn1pmp01Y5/3A+BHYiEoLP1x2bAYsED//////1Bd8HO0eB8d+LTGfc71O///rXnfxA3/iMGD3/qVIHER0Rv//mGMJZNyDfd1MFTKbXNHYZWZddbbbJYzMITCEWY//NIZA4I0JNVfuCUAQxpIoAdwBAAQwhE/MITPlKUpfylKnqUpTcpW0MZ5Q6AoAixU7BV+VO8SnsSgt5b9YKsWCp3/KnSoag04RHv+sFhbPhn////8z1KbKUqBgIJA1UeywNOBo9g0DUrUDQNHmA1K/yyclPQ7BXiUNiU79R7zqpoP/sZWWA46SxyNak040os//NIZBAFyWSQAgBm8IQYAZAGAAACw+LvNmjTixQoFBhIEBiBYgCAwIDMPgME/VddEDVRNgB//////////xUVFRX//11MQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+                this.bing = new Audio("data:audio/mpeg;base64,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qqqqqqqqqqqqqqqqqqqqqqqqqr9bbttnt/jwvWnHLfKZ2ctzdoAfXnIS+oN///o2zN7//mMTsl6a5ymM7tddbmHKiPQw51X//T9NDfmAod/66kxBTUUzLjEwMP/zSGTOCTlhRy80asUAAANIAAAAAKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpWNyySx2608Ieq16qqS69VFrNe9T/X7Wv1K1qIoBsL7fIi+vX2unRujhnPC1YSJmdkGu9DvZWtdSo1dXBLO3+nt7I/rFeCzJz/1UxBTUUzLjEwMP/zSGTDB8lfUy8FqrEAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVXY3JbZJtdVwvS2qfq17r2U9VdVLT6+/s1q2qWM4DYUuJrQP+0EDs7qjDhAEUY3eqEcgcI6EIv+d/12zdWMmB7MLFCEKuCPBmbr1b91Mur/pPdIxJsCebHf/QkxBTUUzLjEwMP/zSGTOCT1fRS80UMkAAANIAAAAAKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpZwSSy13a0ALK8t+jXMvHO/nnb6FgmQDmYXcf/97/0Q1DzJjGGGGM8xiyqjsa83SYrMmiaPbp30r2X/+urJ/NBVUxBTUUzLjEwMP/zSGTeCzVhRy9AcMcAAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVdctlljVusXCy8tIZspcoIFf+tX0f93UggeByf91V2tspf7VN6eieOmBmt1maqzyRqpHf9Dd7qZkKb7/+v/9BkNkxzgnA8EP/QiCHEgoFA4AAAP/zSGTFCBVfSS8GCrEAAANIAAAAABYV8BjeIhD0CsXVVcunC+d6/JAkxlhjRXFHcy+IwAxpAGweBgQAm0biTl0us/46h3kEHNJolSylOK1/y4T5FiZKRSKZACdrX6kv+QYnRZo+BayfGwNoUEI5FMFDVa0VHV6X/5FxmB2iUhjQBEIGsMhfAjBpjsIKRYu+Uv/zSGTNCRVjRy+gtAEAAANIAUAAAIbHUUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjEwMP/zSGT/EN1XIi/C0ACAAANIAYAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zSGSEAAABpADgAAAAAANIAcAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==");
+                this.buzzer = new Audio("data:audio/mpeg;base64,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");
+
+                this.timer = this.beep.cloneNode();
+                this.timerStart = this.beep.cloneNode();
+                this.timerEnd = this.beep.cloneNode();
+
+                this.timer.loop = true;
+                this.bing.playbackRate = .5;
+                this.timerStart.playbackRate = .5;
+                this.timerEnd.playbackRate = .25;
+
+                return this;
+            };
+        };
+    </script>
+</body>
+
+</html>

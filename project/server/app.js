@@ -200,12 +200,18 @@ try {
 })
 
 
-
-
 // Route for the dashboard page
 app.get('/dashboard', verifyJWT,(req, res) => {
   res.sendFile(path.join(__dirname, '../client/public', 'dashboard.html'));
 });
+
+app.get('/game1-description.html',verifyJWT,(_,res) =>{
+  res.sendFile(path.join(__dirname, '../client/games/autism/game1desc.html', ''));
+})
+app.get('/client/autism/game1.html',verifyJWT,(_,res) =>{
+  res.sendFile(path.join(__dirname, '../client/games/autism/game1.html', ''));
+
+})
 
 
 // Handle login request
