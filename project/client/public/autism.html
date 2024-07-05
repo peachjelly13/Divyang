@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autism Games</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(255, 253, 231, 0.4); /* Light cream background */
+    color: black; /* Text color */
+}
+
+header {
+    background: rgba(255, 253, 231, 0.4); /* Header background color */
+    color: black; /* Header text color */
+    padding: 1rem 0;
+    text-align: center;
+}
+
+.logo {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.games-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: center;
+}
+
+.game {
+    background: #adcae6; /* Card background color */
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+    width: 200px;
+}
+
+
+
+.game img {
+    width: 100%;
+    border-radius: 10px;
+}
+.games-grid .game:nth-child(2) img {
+  width: 200px;
+  height: 200px;
+}
+.games-grid .game:nth-child(3) img {
+  width: 200px;
+  height: 200px;
+}
+.games-grid .game:nth-child(4) img {
+  width: 200px;
+  height: 200px;
+}
+.games-grid .game:nth-child(5) img {
+  width: 200px;
+  height: 200px;
+}
+
+.game p {
+    font-size: 1.5rem;
+    margin: 1rem 0 0;
+    color:#0d3b66;
+    font-weight: bold;
+}
+
+.game:hover {
+    transform: scale(1.05);
+}
+.heading{
+    font-size: 2rem;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Autism Games</div>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2  class="heading">Choose a Game</h2>
+            <div class="games-grid">
+                <div class="game" onclick="navigateToGame('game1')">
+                    <img src="https://play-lh.googleusercontent.com/8QD_OqyTm0tGPcwgprUgQJa-1kORuAE2utHYUpSKddI6pHXGjcqSH_T-DR_K6AVnALc=w480-h960-rw" alt="Game 1">
+                    <p>Game 1 Description</p>
+                </div>
+                <div class="game" onclick="navigateToGame('game2')">
+                    <img src="https://i.pinimg.com/736x/e2/18/51/e218516fb589993da767699eb4162b2d.jpg"  alt="Game 2">
+                    <p>Game 2 Description</p>
+                </div>
+                <div class="game" onclick="navigateToGame('game3')">
+                    <img src="https://cloud.educaplay.com/r1/img/activities/RELACIONAR_MOSAICO/logoActivity.png?v=1717753231" alt="Game 3">
+                    <p>Game 3 Description</p>
+                </div>
+                <div class="game" onclick="navigateToGame('game4')">
+                    <img src="https://th.bing.com/th/id/OIP.T_DS01t8WRTDISkqX7DdUAAAAA?rs=1&pid=ImgDetMain" alt="Game 4">
+                    <p>Game 4 Description</p>
+                </div>
+                <div class="game" onclick="navigateToGame('game5')">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOH6aBiuAs7Smah-DqVsItq3S67LFVD72D1g&s" alt="Game 5">
+                    <p>Game 5 Description</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        function navigateToGame(gameId) {
+    window.location.href = `/${gameId}-description.html`;
+}
+    </script>
+</body>
+</html>

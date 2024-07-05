@@ -126,6 +126,10 @@ return res
     
 )
 })
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/public', 'login.html'));
+});
+
 
 const logoutUser = asyncHandler(async(req,res)=>{
 await User.findByIdAndUpdate(
